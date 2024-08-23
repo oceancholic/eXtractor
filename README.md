@@ -17,7 +17,7 @@
 </p>
 </div>
 
-<p>This is not a production grade script but a weekend fun to make a free alternative to X API.<br>
+<p>This is not meant to be a production grade script but a weekend fun to make a free alternative to X API.<br>
   X web handles/loads tweets and their replies in a weird way (renders certain amount of tweets based on their tweet height img/gif etc.) to avoid AI scrapping their data from site and advertisements also adds some complexity.
 </p><br> 
   <p>
@@ -28,8 +28,7 @@
   </p>
 <hr>
 
-<h3>Usage</h3>
-<hr>
+<h4>install & requirements</h4>
 <p>
     eXtractor script expects linux OS, Chromium browser and suitable <a href="https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json">ChromeDriver</a>
     to be installed at <br> "/usr/local/bin/chromedriver". <br> Please Dig Selenium Documentation for instructions.
@@ -39,6 +38,7 @@
     pip3 install selenium
   </pre>
 <hr>
+<h3>Usage :</h3>
 <div>
   <h3>eXtractor has 3 modes of operation:</h3>
   <p>
@@ -52,12 +52,12 @@
 <div>
   <h3>Also There is 3 Methods of Login</h3>
   <ul>
-    <li>using credential file (format below)</li>
+    <li>using a credential file (format below)</li>
     <li>manually enter</li>
     <li>cookies</li>
   </ul>
   <hr>
-  <h3>Using Credential File</h3>
+  <h3>Using the Credential File</h3>
   <p>Credential File consist of 3 lines</p>
   <ol>
     <li>First line is username without '@'</li>
@@ -70,12 +70,12 @@
     email@address.com
     v3ry53Cre7P@s5W0rD!
   </pre>
-  <p>supply your credential file path name with -c or --credential argument</p>
+  <p>supply your credential file path name with -c or --credential flag</p>
   <pre>
-    python3 eXtractor.py -c myFile.txt
+    python3 eXtractor.py -c myFile.txt (along with the modes --profile /--replies /--search flags see below.)
   </pre>
   <p>
-    Using Credential File is usefull when you manage multiple accounts for scapping data. Please be aware that keeping credentials in plain text file is not a good choice. Another good reason to use a "disposable account" with this script.
+    Using Credential File is usefull when you manage multiple accounts for scrapping data. Please be aware that keeping credentials in plain text file is not a good choice. Another good reason to use a "disposable account" with this script.
   </p>
   <hr>
   <h3>Manually Enter</h3>
@@ -85,7 +85,7 @@
   <hr>
   <h3>Cookies</h3>
   <p>
-    Once you successfully Login by one of the above methods it will save your cookies into "xitter" file in the same directory(There is no special reason to call cookie file "xitter" so feel free to change for your personal enjoyment.). The next time you use the script you don't need to supply credential file it will read the cookies and authorize.<br>
+    Once you successfully Login by one of the above methods it will save your cookies into "xitter" file in the same directory(There is no special reason to call the cookie file "xitter" so feel free to change for your personal enjoyment.). The next time you use the script you don't need to supply credential file it will read the cookies and authorize.<br>
     However you usually don't want your auth cookies lying around unencrypted! it's a good idea to delete them when you finished. There is a catch thou. X will constantly notify you "There was a Login from a new device...." if you don't use cookies and this is the main reason why I had the urge to add the cookie feature.
   </p>
 </div>
@@ -94,16 +94,19 @@
 <p>
   Searching is made with the -s or --search flag followed by a search term. if you are going to search a hashtag write your term in quotes like "#TwitterRocksElonSucks", keywords does not require quotes.</p>
   <p>
-  Additionally you can cap the number of results to be extracted by adding -n flag followed by a number. Default is ~200.
+  Additionally you can cap or increase the number of results being extracted by adding -n flag followed by a number. Default is ~200.
   </p>
   <p>
-    Another option is -t --top flag. if you provide this flag it will search for "Top Tweets" otherwise you'll get latest ones.
+    Another option is -t --top flag. if you provide this flag it will search for "Top Tweets" otherwise you'll get latest ones (Beware of porn bots.).
   </p>
   <p>
-  Results will be saved in json format in the same directory.<br> You can get bored while eXtractor is busy doing it's thing just hit CTRL+C to exit and it will save the tweets already downloaded before exit.
+  Results will be saved in json format in the same directory.<br> You can get bored while eXtractor is busy doing it's thing just hit CTRL+C to exit and it will save the tweets already downloaded before shutting down.
 </p>
 <pre>
   python3 eXtracted.py -s "#viraltweets" -n 1000 -t
+  ^
+  --this will search top 1000 tweets with #viraltweets hashtag. 
+  
 </pre>
 <h3>
   Profile Data
@@ -114,6 +117,7 @@
 <pre>
   python3 eXtractor.py -p https://x.com/debian
 </pre>
+<hr>
 <h3>
   Replies
 </h3>
@@ -128,3 +132,19 @@
 <pre>
   python3 eXtractor.py -r https://x.com/AnonymousUK2022/status/1825436338683781120
 </pre>
+
+<h4>Notes :</h4>
+<hr>
+<p>
+  <ul>
+    <li>
+      Why i wrote this script is in the banner and I belive gestures like these without expectations strengthen ties between us and we are stronger together in this mad world. At least try to be a good person. If it doesn't make sense to you just ignore.  
+    </li> 
+    <li>
+      Despite trying to be good person it was a nonsense and ridiculous decision from X to hide read API behind a pay wall. So maybe this helps to put pressure on X decision makers to revert their changes. People get creative when they are constrained. Read some History!!!    
+    </li>
+    <li>
+      Finally as i said before this script is a work in progress I just make it barely to work so any help and idea is Welcomed. Stay Safe... 
+    </li>
+  </ul>
+</p>
