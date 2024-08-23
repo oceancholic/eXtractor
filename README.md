@@ -70,7 +70,7 @@
     email@address.com
     v3ry53Cre7P@s5W0rD!
   </pre>
-  <h3>supply your credential file path name with -c or --credential argument</h3>
+  <p>supply your credential file path name with -c or --credential argument</p>
   <pre>
     python3 eXtractor.py -c myFile.txt
   </pre>
@@ -82,6 +82,7 @@
   <p>
     if you do not have a saved cookie and didn't provide a credential file, script will kindly ask for your credentials interactively. (P.S. typed password won't show in cmd line.)
   </p>
+  <hr>
   <h3>Cookies</h3>
   <p>
     Once you successfully Login by one of the above methods it will save your cookies into "xitter" file in the same directory(There is no special reason to call cookie file "xitter" so feel free to change for your personal enjoyment.). The next time you use the script you don't need to supply credential file it will read the cookies and authorize.<br>
