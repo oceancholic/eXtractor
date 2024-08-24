@@ -247,6 +247,8 @@ def get_profile_data(browser : webdriver.Chrome):
         output_profile_data(p)
     except Exception as ex:
         logging.error("Profile Data Extraction Failed.")
+    finally:
+        browser.quit()
 
 def extract_routine(browser : webdriver.Chrome,number, scroll, is_search = True):
     extracted_list = []
@@ -337,6 +339,7 @@ def get_web_driver(headless):
         service = ChromeService(executable_path="/usr/local/bin/chromedriver")
         options = ChromeOptions()
         if headless:
+            logging.info("Running in Headless Mode.")
             options.add_argument("--headless=new")
         options.add_argument("--remote-debugging-port=9222")
         options.add_argument("disable-infobars")
