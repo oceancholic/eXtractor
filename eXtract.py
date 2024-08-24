@@ -329,13 +329,15 @@ def output_json(tweets : List[Tweet], filename = None) -> bool:
         logging.error("Following error occured :", e)
         return False
 
-def get_web_driver():
+def get_web_driver(headless):
     try:
         if not path.exists("/usr/local/bin/chromedriver"):
             logging.critical("ChromeDriver is not in the required path : '/usr/local/bin/chromedriver'")
             sys.exit("Please fix the issue and re-run.")
         service = ChromeService(executable_path="/usr/local/bin/chromedriver")
         options = ChromeOptions()
+        if headless:
+            options.add_argument("--headless=new")
         options.add_argument("--remote-debugging-port=9222")
         options.add_argument("disable-infobars")
         browser = webdriver.Chrome(options=options, service=service)
@@ -401,7 +403,8 @@ def search_tweets(browser : webdriver.Chrome, search_term : str, latest, number)
         logging.error("Error Ocurred Extracting Tweets.")
 
 def main(args, username, email, password, login_with_cookie = False):
-    browser = get_web_driver();
+    hless = args.headless
+    browser = get_web_driver(hless);
     if login_with_cookie:
         browser.get("https://www.x.com")
         cookies = read_cookies()
@@ -480,6 +483,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--replies", help="Link to a tweet to get replies from", metavar=(""))
     parser.add_argument("-n", "--number", type=int, default=200, help="Number Of Tweets to get (default ~200)", metavar=(""))
     parser.add_argument("-c", "--credential", help="Credentials file is useful for managing multiple accounts (see format in github repo)", metavar=(""))
+    parser.add_argument("--headless", action='store_true',help="Do not open Browser Windows.")
     parser.add_argument("--version", action='version', version="%(prog)s version 0b0001")
     args = parser.parse_args()
     log_format = ' %(asctime)s : %(levelname)-10s -- %(message)s'
