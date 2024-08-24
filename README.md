@@ -132,7 +132,12 @@
 <pre>
   python3 eXtractor.py -r https://x.com/AnonymousUK2022/status/1825436338683781120
 </pre>
-
+<hr>
+<h3>Headless</h3>
+<p>
+  You can also provide a --headless flag to run without opening a browser window.
+</p>
+<br>
 <h4>Notes :</h4>
 <hr>
 <p>
