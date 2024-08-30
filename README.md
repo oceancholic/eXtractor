@@ -40,12 +40,13 @@
 <hr>
 <h3>Usage :</h3>
 <div>
-  <h3>eXtractor has 3 modes of operation:</h3>
+  <h3>eXtractor has 4 modes of operation:</h3>
   <p>
     <ul>
       <li>Search For Hashtags and Keywords</li>
       <li>Get Profile data from supplied profile link</li>
       <li>Get Replies to a Tweet from supplied tweet link</li>
+      <li>Get News from Explorer Tab</li>
     </ul>
   </p>
 </div>
@@ -103,7 +104,7 @@
   Results will be saved in json format in the same directory.<br> You can get bored while eXtractor is busy doing it's thing just hit CTRL+C to exit and it will save the tweets already downloaded before shutting down.
 </p>
 <pre>
-  python3 eXtracted.py -s "#viraltweets" -n 1000 -t
+  python3 eXtractor.py -s "#viraltweets" -n 1000 -t
   ^
   --this will search top 1000 tweets with #viraltweets hashtag. 
   
@@ -131,6 +132,18 @@
 </p>
 <pre>
   python3 eXtractor.py -r https://x.com/AnonymousUK2022/status/1825436338683781120
+</pre>
+<hr>
+<h3>
+  News
+</h3>
+<p>
+  In this mode it will get news posted on Explorer tab. İt will get only headers time and category of news.
+</p>
+<pre>
+  python3 eXtractor.py --news -n 50
+  ^
+  --this will get top 50 news from explorer tab.
 </pre>
 <hr>
 <h3>Headless</h3>
