@@ -54,6 +54,26 @@ class Profile:
     def toJson(self):
         return json.dumps(self, ensure_ascii=False ,default=lambda o:o.__dict__)
 
+class News:
+    def __init__(self, headline, time, category):
+        self.headline = headline
+        self.time = time
+        self.category = category
+
+    def __eq__(self, other:object) -> bool:
+        if not isinstance(other, News):
+            return False
+        return self.headline == other.headline
+
+    def toJson(self):
+        return json.dumps(self, ensure_ascii=False ,default=lambda o:o.__dict__)
+
+def has_news(news_list: List[News], news : News):
+    for n in news_list:
+        if news == n:
+            return True
+    return False
+
 def has_tweet(tweet_list : List[Tweet], tweet : Tweet):
     for twt in tweet_list:
         if twt == tweet:
@@ -250,6 +270,66 @@ def get_profile_data(browser : webdriver.Chrome):
     finally:
         browser.quit()
 
+def output_news_data(news : List[News]) -> bool:
+    try:
+        filename = "news_" + str(datetime.now().timestamp()) + ".json"
+        logging.info(f"News will be saved to {filename}...")
+        json_data = "[" + "\n,".join([json.dumps(item.toJson(), ensure_ascii=False, check_circular=False) for item in news]) + "]"
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(json_data)
+        logging.info(f"News saved to : {filename}")
+        return True
+    except Exception as e:
+        logging.error("Following error occured :", e)
+        return False
+
+def extract_news(browser : webdriver.Chrome, number):
+    try:
+        news = []
+        previous = -1
+        failed_to_get = 0
+        while len(news) < number:
+            news_divs = browser.find_elements(By.CSS_SELECTOR, value="div[data-testid='trend']")
+            for divs in news_divs:
+                try:
+                    spans = divs.find_elements(By.TAG_NAME, value="span")
+                    hl = spans[0].text
+                    tm, ctgry = spans[1].text.split("·",2)
+                    nw = News(hl, tm, ctgry)
+                    if not has_news(news, nw):
+                        news.append(nw)
+                except:
+                    logging.error("Parsing a News Failed.")
+                    continue
+            js = f"window.scrollBy(0,750);"
+            browser.execute_script(js)
+            time.sleep(3)
+            if previous != len(news):
+                previous = len(news)
+                failed_to_get = 0
+            else:
+                if failed_to_get < 3:
+                    failed_to_get += 1
+                    logging.warning(f"{failed_to_get} attemps to get news.")
+                else:
+                    break
+            logging.info(f"{len(news)} distinct news item extracted so far.")
+        if output_news_data(news):
+            logging.info(f"Successfully Extracted {len(news)} news.")
+        else:
+            logging.error("Saving News Failed.")
+    except KeyboardInterrupt:
+        logging.critical("Shutting Down...")
+        if len(news) > 0:
+            if output_news_data(news):
+                logging.info(f"Successfully Extracted {len(news)} news.")
+            else:
+                logging.error(f"Saving News Failed...")
+    except Exception as e:
+        logging.error("News Extraction Failed.")
+    finally:
+        browser.quit()
+
 def extract_routine(browser : webdriver.Chrome,number, scroll, is_search = True):
     extracted_list = []
     log_string = "Tweets" if is_search else "Replies"
@@ -302,9 +382,7 @@ def extract_routine(browser : webdriver.Chrome,number, scroll, is_search = True)
         browser.quit()
 
 def get_tweet_replies(browser : webdriver.Chrome, number):
-    try:
-        link = (browser.current_url).replace('/', '_')
-        filename = f"replies_{link}_{str(datetime.now().timestamp())}.json"  
+    try:  
         section = WebDriverWait(browser, 10).until(
                 presence((By.TAG_NAME, "section"))
             )
@@ -405,6 +483,16 @@ def search_tweets(browser : webdriver.Chrome, search_term : str, latest, number)
     except Exception as e:
         logging.error("Error Ocurred Extracting Tweets.")
 
+def parse_news(browser: webdriver.Chrome, number):
+    try:
+        browser.get("https://x.com/explore/tabs/news")
+        section = WebDriverWait(browser, 30).until(
+                presence((By.TAG_NAME, "section"))
+        )
+        extract_news(browser, number)
+    except Exception as e:
+        logging.error("Error occured Extracting news.")
+
 def main(args, username, email, password, login_with_cookie = False):
     hless = args.headless
     browser = get_web_driver(hless);
@@ -430,6 +518,9 @@ def main(args, username, email, password, login_with_cookie = False):
         term = args.search
         time.sleep(5)
         search_tweets(browser, term, top, number)
+    elif args.news == True:
+        num = args.number
+        parse_news(browser, num)
     elif args.profile != None:
         pattern = r"((http|https)://)(www.x.com/|x.com/)[a-zA-Z0-9_]+"
         check = re.compile(pattern)
@@ -486,13 +577,14 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--replies", help="Link to a tweet to get replies from", metavar=(""))
     parser.add_argument("-n", "--number", type=int, default=200, help="Number Of Tweets to get (default ~200)", metavar=(""))
     parser.add_argument("-c", "--credential", help="Credentials file is useful for managing multiple accounts (see format in github repo)", metavar=(""))
+    parser.add_argument("--news", action='store_true', help="Get News from Explore tab (Beta)")
     parser.add_argument("--headless", action='store_true',help="Do not open Browser Windows.")
     parser.add_argument("--version", action='version', version="%(prog)s version 0b0001")
     args = parser.parse_args()
     log_format = ' %(asctime)s : %(levelname)-10s -- %(message)s'
     logging.basicConfig(format=log_format, level=logging.INFO)
-    if args.profile == None and args.search == None and args.replies == None:
-        logging.error("At least one of the options are required (search / profile / replies)")
+    if args.profile == None and args.search == None and args.replies == None and args.news != True:
+        logging.error("At least one of the options are required (search / profile / replies / news)")
         parser.print_help()
     else:
         if args.credential != None:
